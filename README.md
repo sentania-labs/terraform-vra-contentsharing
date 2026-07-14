@@ -45,4 +45,43 @@ Multiple policies against the same catalog source are supported — `sharing_pol
 - This module replaces the deprecated `vra_catalog_source_entitlement` pattern with `vra_content_sharing_policy`.
 
 <!-- BEGIN_TF_DOCS -->
+## Requirements
+
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.14.0 |
+| <a name="requirement_vra"></a> [vra](#requirement\_vra) | >= 0.15.0 |
+
+## Providers
+
+| Name | Version |
+|------|---------|
+| <a name="provider_vra"></a> [vra](#provider\_vra) | >= 0.15.0 |
+
+## Modules
+
+No modules.
+
+## Resources
+
+| Name | Type |
+|------|------|
+| [vra_catalog_source_blueprint.this](https://registry.terraform.io/providers/vmware/vra/latest/docs/resources/catalog_source_blueprint) | resource |
+| [vra_content_sharing_policy.policies](https://registry.terraform.io/providers/vmware/vra/latest/docs/resources/content_sharing_policy) | resource |
+
+## Inputs
+
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_catalog_source_name"></a> [catalog\_source\_name](#input\_catalog\_source\_name) | The name of the blueprint catalog source as it appears in the Service Broker catalog. Also used as the prefix for generated sharing policy names. | `string` | n/a | yes |
+| <a name="input_description"></a> [description](#input\_description) | A human-friendly description applied to the catalog source. | `string` | `"Created by vRA terraform provider - Do not Edit!"` | no |
+| <a name="input_project_id"></a> [project\_id](#input\_project\_id) | The id of the project whose released blueprints are exposed as a catalog source. Project-scoped sharing policies are also attached to this project. | `string` | n/a | yes |
+| <a name="input_sharing_policies"></a> [sharing\_policies](#input\_sharing\_policies) | Map of content sharing policies to create against the catalog source, keyed by a short label.<br/>Each policy shares the catalog source with an audience:<br/>  - scope: "project" (default) attaches the policy to project\_id; "organization" creates an org-scoped policy that applies across all projects.<br/>  - share\_with\_everyone: true shares with all users and groups in the applicable project(s), ignoring roles.<br/>  - roles: project role identifiers (e.g. member, administrator) granted access when share\_with\_everyone is false.<br/>  - name/description: override the generated policy name ("<catalog\_source\_name>-<key>") and default description.<br/>The default creates a single project-scoped policy shared with project members and administrators. | <pre>map(object({<br/>    name                = optional(string)<br/>    description         = optional(string, "Created by vRA terraform provider - Do not Edit!")<br/>    scope               = optional(string, "project")<br/>    share_with_everyone = optional(bool, false)<br/>    roles               = optional(list(string), ["member", "administrator"])<br/>  }))</pre> | <pre>{<br/>  "project": {}<br/>}</pre> | no |
+
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| <a name="output_catalog_source"></a> [catalog\_source](#output\_catalog\_source) | The resulting blueprint catalog source, including name and id. Reference the id from externally-managed sharing policies. |
+| <a name="output_sharing_policies"></a> [sharing\_policies](#output\_sharing\_policies) | Map of the resulting content sharing policies keyed by policy label, each including name and id. |
 <!-- END_TF_DOCS -->
