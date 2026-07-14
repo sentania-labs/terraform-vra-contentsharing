@@ -36,6 +36,11 @@ variable "sharing_policies" {
   }
 
   validation {
+    condition     = length(var.sharing_policies) > 0
+    error_message = "At least one sharing policy is required — a catalog source with no sharing policy is invisible to all users."
+  }
+
+  validation {
     condition     = alltrue([for p in var.sharing_policies : contains(["project", "organization"], p.scope)])
     error_message = "Each sharing policy scope must be either \"project\" or \"organization\"."
   }
